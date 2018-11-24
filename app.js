@@ -4,8 +4,10 @@ const logger = require('morgan');
 const express = require('express');
 // const schedule = require('node-schedule');
 const createError = require('http-errors');
+const swaggerUi = require('swagger-ui-express');
 // const usersRouter = require('./routes/users');
 const route = require('./config/routes');
+const swaggerDocument = require('./swagger.json');
 const environment = require('./config/environment');
 // const daliyLogger = require('./lib/logger');
 
@@ -20,6 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.use('/users', usersRouter);
 environment(app);
 route(app);
+app.use('/apiDocs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 
 // const rule = new schedule.RecurrenceRule();
