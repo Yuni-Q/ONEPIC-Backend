@@ -51,7 +51,11 @@ router.post('/', isNotLoggedIn, async (req, res) => {
       );
     });
     await users.update({ token }, { where: { email } });
-    res.json(resultFormat(true, null, token));
+    let result;
+    token.then((t) => {
+      result = { token: t };
+      res.json(resultFormat(true, null, result));
+    });
     return;
   }
   res.json(resultFormat(false, '이미 존재하는 이메일 입니다'));

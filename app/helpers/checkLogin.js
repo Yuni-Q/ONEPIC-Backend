@@ -31,7 +31,7 @@ exports.isLoggedIn = async (req, res, next) => {
 
 exports.isNotLoggedIn = (req, res, next) => {
   try {
-    const token = req.headers.Authorization.split(' ')[1];
+    const token = req.headers.Authorization;
     if (token) {
       res.json(resultFormat(false, '토큰이 있는데요?', token));
       return;
