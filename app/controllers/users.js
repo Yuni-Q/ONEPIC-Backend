@@ -8,8 +8,21 @@ const {
   isNotLoggedIn,
 } = require('../helpers/checkLogin');
 const usersServices = require('../services/usersServices');
+const {
+  users,
+} = require('../models');
 
 const router = express.Router();
+
+router.get('/', isLoggedIn, async (req, res) => {
+  try {
+    const user = await users.findAll({});
+    console.log(user);
+    res.json(resultFormat(true, null, user));
+  } catch (error) {
+    res.json(resultFormat(false, error.message));
+  }
+});
 
 router.post('/', isNotLoggedIn, async (req, res) => {
   try {
