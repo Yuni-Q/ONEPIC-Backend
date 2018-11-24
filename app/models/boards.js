@@ -2,7 +2,12 @@ module.exports = (Sequelize, DataTypes) => {
     const boards = Sequelize.define(
       'boards',
       {
-        id: DataTypes.INTEGER,
+        id: {
+            type: DataTypes.INTEGER, 
+            primaryKey: true,
+            autoIncrement: true
+        },
+        
         title: DataTypes.STRING,
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,

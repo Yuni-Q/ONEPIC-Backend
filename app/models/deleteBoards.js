@@ -2,7 +2,11 @@ module.exports = (Sequelize, DataTypes) => {
     const deleteBoards = Sequelize.define(
       'deleteBoards',
       {
-        id: DataTypes.INTEGER,
+        id: {
+            type: DataTypes.INTEGER, 
+            primaryKey: true,
+            autoIncrement: true
+        },
         title: DataTypes.STRING,
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
