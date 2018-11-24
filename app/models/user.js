@@ -12,6 +12,7 @@ module.exports = (Sequelize, DataTypes) => {
       },
       nickName: DataTypes.STRING,
       email: DataTypes.STRING,
+      token: DataTypes.STRING,
       password: DataTypes.STRING,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,

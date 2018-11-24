@@ -28,12 +28,12 @@ router.post('/', isNotLoggedIn, async (req, res) => {
   });
 
   if (!user) {
-    res.json(resultFormat(false, '이미 존재하는 이메일 입니다'));
+    res.json(resultFormat(false, '이메일이 존재하지 않습니다.'));
     return;
   }
 
   if (user.password === password) {
-    const token = new Promise((resolve, reject) => {
+    const t = new Promise((resolve, reject) => {
       jwt.sign(
         {
           id: user.id,
@@ -44,14 +44,19 @@ router.post('/', isNotLoggedIn, async (req, res) => {
           expiresIn: '7d',
           issuer: 'ONEPIC',
           subject: 'userInfo',
-        }, (err, t) => {
+        }, (err, tt) => {
           if (err) reject(err);
-          resolve(t);
+          resolve(tt);
         },
       );
     });
-    await users.update({ token }, { where: { email } });
-    res.json(resultFormat(true, null, token));
+    let result;
+    await t.then(async (token) => {
+      result = { token };
+      console.log(result.token);
+      await users.update({ token, email }, { where: { email } });
+      res.json(resultFormat(true, null, result));
+    });
     return;
   }
   res.json(resultFormat(false, '이미 존재하는 이메일 입니다'));
@@ -59,15 +64,17 @@ router.post('/', isNotLoggedIn, async (req, res) => {
 
 router.delete('/', isLoggedIn, async (req, res) => {
   try {
+    console.log('user', req.user);
     await users.update({
       token: null,
     }, {
       where: {
-        id: req.id,
+        id: req.user.id,
       },
     });
   } catch (error) {
     res.json(resultFormat(false, '에러가 발생했습니다.', error));
+    return;
   }
   res.json(resultFormat(true, null));
 });
