@@ -2,8 +2,8 @@
 // const Sequelize = require('sequelize');
 
 module.exports = (Sequelize, DataTypes) => {
-  const deleteUser = Sequelize.define(
-    'deleteUser',
+  const deleteUsers = Sequelize.define(
+    'deleteUsers',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -22,5 +22,5 @@ module.exports = (Sequelize, DataTypes) => {
   // Users.associate = (models) => {
   //   // associations can be defined here
   // };
-  return deleteUser;
+  return deleteUsers;
 };

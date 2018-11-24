@@ -1,6 +1,6 @@
 const {
   users,
-  deleteUser,
+  deleteUsers,
 } = require('../models');
 
 module.exports = {
@@ -52,13 +52,13 @@ module.exports = {
         id,
       },
     });
-    await deleteUser.create({
+    await deleteUsers.create({
       id: user.id,
       nickName: user.nickName,
       email: user.email,
       password: user.password,
     });
-    await users.destory({
+    await users.destroy({
       where: {
         id,
       },
