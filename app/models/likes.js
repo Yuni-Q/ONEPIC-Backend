@@ -5,7 +5,11 @@ module.exports = (Sequelize, DataTypes) => {
     const likes = Sequelize.define(
       'likes',
       {
-        id: DataTypes.INTEGER,
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true,
+        },
         userId: DataTypes.INTEGER,
         boardId: DataTypes.INTEGER,
         createdAt: DataTypes.DATE,
