@@ -6,7 +6,7 @@ const {
 const {
   isLoggedIn,
   isNotLoggedIn,
-} = require('../middlewares/passport/checkLogin');
+} = require('../helpers/checkLogin');
 const usersServices = require('../services/usersServices');
 
 const router = express.Router();

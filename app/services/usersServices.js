@@ -1,52 +1,59 @@
 const {
-  Users,
+  users,
+  deleteUser,
 } = require('../models');
-const crypto = require('../helpers/cryptoHelper');
 
 module.exports = {
 
   usersFindOneUserName: ({
-    userName,
-  }) => Users.findOne({
+    email,
+  }) => users.findOne({
     where: {
-      userName,
+      email,
     },
   }),
   createUser: async ({
-    userName,
+    email,
     password,
   }) => {
-    const pwd = await crypto.makePssword(password);
-    await Users.create({
-      userName,
-      password: pwd,
+    await users.create({
+      email,
+      password,
     });
   },
 
   updateUser: async (
     {
-      userName,
+      email,
     },
     {
       password,
     }) => {
-    const pwd = await crypto.makePssword(password);
-    await Users.update({
-      password: pwd,
+    await users.update({
+      password,
     }, {
       where: {
-        userName,
+        email,
       },
     });
   },
 
   deleteUser: async ({
     id,
-  }) => Users.update({
-    isDelete: true,
-  }, {
-    where: {
-      id,
-    },
-  }),
+  }) => {
+    const user = await users.findOne({ where: { id } });
+    await deleteUser.create({
+      id: user.id,
+      nickName: user.nickName,
+      email: user.email,
+      password: user.password,
+    });
+    await users.destory(
+      {
+        where: {
+          id,
+        },
+      },
+    );
+  },
 };
