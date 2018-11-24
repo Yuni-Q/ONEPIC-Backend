@@ -1,25 +1,55 @@
 const express = require('express');
+const sequelize = require('sequelize');
 const router = express.Router();
 const db = require('../models');
+const { resultFormat } = require('../helpers/formHelper');
 
-router.get('/boards', async (req, res) => {
-    const read = await db.boards.findAll({});
-    res.json(read);
+router.get('/', async (req, res) => {
+    // const read = await db.boards.findAll({});
+    const query = `
+    select
+      * 
+    from boards
+      left join (SELECT boardId, count(*) as likeCounts FROM Node2.likes group by boardId) as counts
+        on boards.id = counts.boardId;
+    `
+    const result = await db.sequelize.query(query, { type: sequelize.QueryTypes.SELECT});
+    console.log('result', result);
+    res.json(resultFormat(true, null, result));
 });
 
-router.post('/boards', async (req, res) => {
-    const { id, title, createdAt, updatedAt, date, content, userId, location, lon, lat, share, imgUrl } = req.body;
-    const read = await db.boards.create({
-        id, title, createdAt, updatedAt, date, content, userId, location, lon, lat, share, imgUrl,
-    });
-    res.json(read);
-});
-
-router.put('/boards/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     const { id } = req.params;
-    const { id, title, createdAt, updatedAt, date, content, userId, location, lon, lat, share, imgUrl } = req.body;
+    // const read = await db.boards.findOne({
+    //     where:{
+    //       id,
+    //     }
+    //   });
+    const query = `
+    select
+      * 
+    from boards
+      left join (SELECT boardId, count(*) as likeCounts FROM Node2.likes group by boardId) as counts
+        on boards.id = counts.boardId
+    where boards.id = ${id};
+    `
+    const result = await db.sequelize.query(query, { type: sequelize.QueryTypes.SELECT});
+    console.log('result', result);
+    res.json(resultFormat(true, null, result[0]));
+});
+
+router.post('/', async (req, res) => {
+    const { title, createdAt, updatedAt, date, content, userId, location, lon, lat, share, imgUrl } = req.body;
+    const read = await db.boards.create({
+        title, createdAt, updatedAt, date, content, userId, location, lon, lat, share, imgUrl,
+    });
+    res.json(resultFormat(true, null, read));
+});
+
+router.put('/:id', async (req, res) => {
+    const { id } = req.params;
+    const { title, createdAt, updatedAt, date, content, userId, location, lon, lat, share, imgUrl } = req.body;
     const read = await db.boards.update({
-        id: id, 
         title: title,
         createdAt: createdAt,
         updatedAt: updatedAt, 
@@ -30,18 +60,18 @@ router.put('/boards/:id', async (req, res) => {
         lon: lon, 
         lat: lat,
         share: share, 
-        imgUrl: imageUrl
+        imgUrl: imgUrl,
     }, {
         where: {
         id,
     },
   });
-  res.json(read);
+  res.json(resultFormat(true, null, read));
   
 });
 
 //게시글 id에 해당하는 글 지우기 -> deleteBoards에 넣기 
-router.delete('/boards:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
     const { id } = req.params;
     await db.deleteBoards.create
     const read = await db.boards.destroy({
@@ -50,7 +80,7 @@ router.delete('/boards:id', async (req, res) => {
       },
     });
     
-    res.json(read);
+    res.json(resultFormat(true, null, read));
 
 });
 
