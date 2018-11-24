@@ -5,7 +5,7 @@ const { resultFormat } = require('../helpers/formHelper');
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+router.get('/', isLoggedIn, async (req, res) => {
   const read = await db.likes.findAll({});
   res.json(resultFormat(true, null, read));
 });
@@ -21,7 +21,7 @@ router.post('/', isLoggedIn, async (req, res) => {
   res.json(resultFormat(true, null, read));
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', isLoggedIn, async (req, res) => {
   try {
     const { id } = req.params;
     await db.likes.destroy({
