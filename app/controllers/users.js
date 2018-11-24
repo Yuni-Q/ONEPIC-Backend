@@ -6,16 +6,30 @@ const {
 const {
   isLoggedIn,
   isNotLoggedIn,
-} = require('../middlewares/passport/checkLogin');
+} = require('../helpers/checkLogin');
 const usersServices = require('../services/usersServices');
+const {
+  users,
+} = require('../models');
 
 const router = express.Router();
+
+router.get('/', isLoggedIn, async (req, res) => {
+  try {
+    const user = await users.findAll({});
+    console.log(user);
+    res.json(resultFormat(true, null, user));
+  } catch (error) {
+    res.json(resultFormat(false, error.message));
+  }
+});
 
 router.post('/', isNotLoggedIn, async (req, res) => {
   try {
     const exUsers = await usersServices.usersFindOneUserName(req.body);
     if (exUsers) {
       res.json(resultFormat(400, '이미 가입 된 유저 name 입니다.'));
+      return;
     }
     await usersServices.createUser(req.body);
     res.json(resultFormat(true, null));
