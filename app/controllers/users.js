@@ -16,6 +16,7 @@ router.post('/', isNotLoggedIn, async (req, res) => {
     const exUsers = await usersServices.usersFindOneUserName(req.body);
     if (exUsers) {
       res.json(resultFormat(400, '이미 가입 된 유저 name 입니다.'));
+      return;
     }
     await usersServices.createUser(req.body);
     res.json(resultFormat(true, null));

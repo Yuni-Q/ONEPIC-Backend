@@ -1,0 +1,246 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "ONEPIC-Backend",
+    "description": "Make Node.js",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "basePath": "/",
+  "tags": [{
+    "name": "users",
+    "description": "회원 가입"
+  }],
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/users": {
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "summary": "회원 가입",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "body",
+          "in": "body",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "example": "aa@aa.com"
+              },
+              "password": {
+                "type": "string",
+                "example": "aa"
+              }
+            }
+          }
+        }],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ok": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "error": {
+                  "type": "string",
+                  "example": null
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "users"
+        ],
+        "summary": "회원 탈퇴",
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ok": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "error": {
+                  "type": "string",
+                  "example": null
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "users"
+        ],
+        "summary": "회원 정보 수정",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string",
+            "description": "API 인증 키",
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywibmlja05hbWUiOm51bGwsImVtYWlsIjoiYWFAYWEuY29tIiwiaWF0IjoxNTQzMDY5NTczLCJleHAiOjE1NDM2NzQzNzMsImlzcyI6Ik9ORVBJQyIsInN1YiI6InVzZXJJbmZvIn0.yOCYZq4pEH0wVJciToRkl8W8kcRwufMXW2sUEI8dCks",
+            "required": true
+          },
+          {
+          "name": "body",
+          "in": "body",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "example": "aa@aa.com"
+              },
+              "password": {
+                "type": "string",
+                "example": "aa"
+              },
+              "nickName": {
+                "type": "string",
+                "example": "aa"
+              }
+            }
+          }
+        }
+      ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ok": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "error": {
+                  "type": "string",
+                  "example": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/signIn": {
+      "post": {
+        "tags": [
+          "signIn"
+        ],
+        "summary": "로그인",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "body",
+          "in": "body",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "example": "aa@aa.com"
+              },
+              "password": {
+                "type": "string",
+                "example": "aa"
+              }
+            }
+          }
+        }],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ok": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "error": {
+                  "type": "string",
+                  "example": null
+                },
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywibmlja05hbWUiOm51bGwsImVtYWlsIjoiYWFAYWEuY29tIiwiaWF0IjoxNTQzMDY5NTczLCJleHAiOjE1NDM2NzQzNzMsImlzcyI6Ik9ORVBJQyIsInN1YiI6InVzZXJJbmZvIn0.yOCYZq4pEH0wVJciToRkl8W8kcRwufMXW2sUEI8dCks"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "signIn"
+        ],
+        "summary": "로그아웃",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string",
+            "description": "API 인증 키",
+            "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywibmlja05hbWUiOm51bGwsImVtYWlsIjoiYWFAYWEuY29tIiwiaWF0IjoxNTQzMDY5NTczLCJleHAiOjE1NDM2NzQzNzMsImlzcyI6Ik9ORVBJQyIsInN1YiI6InVzZXJJbmZvIn0.yOCYZq4pEH0wVJciToRkl8W8kcRwufMXW2sUEI8dCks",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ok": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "error": {
+                  "type": "string",
+                  "example": null
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

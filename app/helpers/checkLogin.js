@@ -8,7 +8,8 @@ const {
 
 exports.isLoggedIn = async (req, res, next) => {
   try {
-    const token = req.headers.Authorization.split(' ')[1];
+    const token = req.headers.authorization.split(' ')[1];
+    console.log('token', token);
     if (!token) {
       res.json(resultFormat(false, '토큰이 없습니다.', token));
       return;
@@ -22,7 +23,11 @@ exports.isLoggedIn = async (req, res, next) => {
       },
     );
     // const user = await users.findOne({ where: { token } });
-    req.user = user;
+    await user.then(
+      (u) => {
+        req.user = u;
+      },
+    );
     next();
   } catch (error) {
     res.json(resultFormat(false, '에러 발생.', error));

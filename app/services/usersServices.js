@@ -12,10 +12,12 @@ module.exports = {
       email,
     },
   }),
-  createUser: async ({
-    email,
-    password,
-  }) => {
+  createUser: async (
+    {
+      email,
+      password,
+    },
+  ) => {
     await users.create({
       email,
       password,
@@ -24,16 +26,20 @@ module.exports = {
 
   updateUser: async (
     {
+      id,
+    }, {
       email,
-    },
-    {
+      nickName,
       password,
-    }) => {
+    },
+  ) => {
     await users.update({
+      email,
+      nickName,
       password,
     }, {
       where: {
-        email,
+        id,
       },
     });
   },
@@ -41,19 +47,21 @@ module.exports = {
   deleteUser: async ({
     id,
   }) => {
-    const user = await users.findOne({ where: { id } });
+    const user = await users.findOne({
+      where: {
+        id,
+      },
+    });
     await deleteUser.create({
       id: user.id,
       nickName: user.nickName,
       email: user.email,
       password: user.password,
     });
-    await users.destory(
-      {
-        where: {
-          id,
-        },
+    await users.destory({
+      where: {
+        id,
       },
-    );
+    });
   },
 };
