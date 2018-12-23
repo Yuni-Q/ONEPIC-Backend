@@ -1,5 +1,6 @@
 const express = require('express');
 const sequelize = require('sequelize');
+const router = express.Router();
 const AWS = require('aws-sdk');
 const formidable = require('formidable');
 const fs = require('fs');
@@ -273,7 +274,7 @@ router.delete('/:id', isLoggedIn, async (req, res) => {
       id,
     },
   });
-
+  
   res.json(resultFormat(true, null, read));
 });
 
