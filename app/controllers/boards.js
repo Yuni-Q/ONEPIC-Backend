@@ -1,5 +1,6 @@
 const express = require('express');
 const sequelize = require('sequelize');
+
 const router = express.Router();
 const AWS = require('aws-sdk');
 const formidable = require('formidable');
@@ -11,8 +12,6 @@ const db = require('../models');
 const {
   resultFormat,
 } = require('../helpers/formHelper');
-
-const router = express.Router();
 
 router.get('/users/likes', isLoggedIn, async (req, res) => {
   // const read = await db.boards.findAll({});
@@ -137,7 +136,6 @@ router.post('/', async (req, res) => {
   form.parse(req, async (err, fields, files) => {
     if (!files.image) {
       const read = await db.boards.create({
-        title: fields.title,
         date: fields.date,
         content: fields.content,
         userId: fields.userId,
@@ -168,7 +166,6 @@ router.post('/', async (req, res) => {
     const baseUrl = 'https://yunhee.s3.amazonaws.com/';
     const imgUrl = baseUrl + imageUrl;
     const read = await db.boards.create({
-      title: fields.title,
       date: fields.date,
       content: fields.content,
       userId: fields.userId,
@@ -207,7 +204,6 @@ router.put('/:id', isLoggedIn, async (req, res) => {
   form.parse(req, isLoggedIn, async (err, fields, files) => {
     if (!files.image) {
       const read = await db.boards.update({
-        title: fields.title,
         date: fields.date,
         content: fields.content,
         userId: fields.userId,
@@ -242,7 +238,6 @@ router.put('/:id', isLoggedIn, async (req, res) => {
     const baseUrl = 'https://yunhee.s3.amazonaws.com/';
     const imgUrl = baseUrl + imageUrl;
     const read = await db.boards.update({
-      title: fields.title,
       date: fields.date,
       content: fields.content,
       userId: fields.userId,
@@ -274,7 +269,6 @@ router.delete('/:id', isLoggedIn, async (req, res) => {
       id,
     },
   });
-  
   res.json(resultFormat(true, null, read));
 });
 
