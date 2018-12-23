@@ -16,6 +16,9 @@ module.exports = (Sequelize, DataTypes) => {
       password: DataTypes.STRING,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
+      profileImg: DataTypes.STRING,
+      myCountry: DataTypes.STRING,
+      myCity: DataTypes.STRING,
     },
     {},
   );

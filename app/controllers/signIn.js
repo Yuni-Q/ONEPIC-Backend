@@ -52,9 +52,18 @@ router.post('/', isNotLoggedIn, async (req, res) => {
     });
     let result;
     await t.then(async (token) => {
-      result = { token };
+      result = {
+        token,
+      };
       console.log(result.token);
-      await users.update({ token, email }, { where: { email } });
+      await users.update({
+        token,
+        email,
+      }, {
+        where: {
+          email,
+        },
+      });
       res.json(resultFormat(true, null, result));
     });
     return;
@@ -75,6 +84,19 @@ router.delete('/', isLoggedIn, async (req, res) => {
   } catch (error) {
     res.json(resultFormat(false, '에러가 발생했습니다.', error));
     return;
+  }
+  res.json(resultFormat(true, null));
+});
+
+router.post('/snsLogin', isLoggedIn, async (req, res) => {
+  try {
+    const { email, token } = req.body;
+    const user = users.findOne({ where: { email, token } });
+    if (!user) {
+      users.create({ email, token });
+    }
+  } catch (err) {
+    res.json(resultFormat(false, '에러가 발생했습니다', err));
   }
   res.json(resultFormat(true, null));
 });
