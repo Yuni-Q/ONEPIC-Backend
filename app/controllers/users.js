@@ -58,4 +58,13 @@ router.delete('/', isLoggedIn, async (req, res) => {
   res.json(resultFormat(true, null));
 });
 
+router.get('/:id', isLoggedIn, async (req, res) => {
+  try {
+    const user = await users.findOne({ where: { id: req.params.id } });
+    res.json(resultFormat(true, null, user));
+  } catch (error) {
+    res.json(resultFormat(false, error.message));
+  }
+});
+
 module.exports = router;
