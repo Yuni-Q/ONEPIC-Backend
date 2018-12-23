@@ -1,5 +1,6 @@
 const express = require('express');
 const sequelize = require('sequelize');
+const dayjs = require('dayjs');
 
 const router = express.Router();
 const AWS = require('aws-sdk');
@@ -40,7 +41,6 @@ router.get('/users/likes', isLoggedIn, async (req, res) => {
   res.json(resultFormat(true, null, result));
 });
 
-
 router.get('/users', isLoggedIn, async (req, res) => {
   // const read = await db.boards.findAll({});
   const query = `
@@ -75,14 +75,19 @@ router.get('/users/:id', isLoggedIn, async (req, res) => {
 });
 
 router.get('/', isLoggedIn, async (req, res) => {
-  // const read = await db.boards.findAll({});
-  const query = `
-    select
-      * 
-    from boards
-      left join (SELECT boardId, count(*) as likeCounts FROM Node2.likes group by boardId) as counts
-        on boards.id = counts.boardId;
-    `;
+  const date = dayjs(req.query.date).format('YYYY-MM-DD HH:mm:ss');
+  console.log(date);
+  const query1 = `
+  select
+    * 
+  from boards
+    left join (SELECT boardId, count(*) as likeCounts FROM Node2.likes group by boardId) as counts
+      on boards.id = counts.boardId
+    where createdAt <= '${date}' and userId
+  `;
+  const query = req.query.others ? `${query1} != ${req.user.id};` : `${query1} = ${req.user.id};`;
+
+  console.log(query);
   const result = await db.sequelize.query(query, {
     type: sequelize.QueryTypes.SELECT,
   });
@@ -113,7 +118,7 @@ router.get('/:id', isLoggedIn, async (req, res) => {
   res.json(resultFormat(true, null, result[0]));
 });
 
-router.post('/', async (req, res) => {
+router.post('/', isLoggedIn, async (req, res) => {
   AWS.config.update({
     accessKeyId: global.config.AWSAccessKeyId,
     secretAccessKey: global.config.AWSSecretKey,
@@ -138,7 +143,7 @@ router.post('/', async (req, res) => {
       const read = await db.boards.create({
         date: fields.date,
         content: fields.content,
-        userId: fields.userId,
+        userId: req.user.id,
         location: fields.location,
         lon: fields.lon,
         lat: fields.lat,
@@ -168,7 +173,7 @@ router.post('/', async (req, res) => {
     const read = await db.boards.create({
       date: fields.date,
       content: fields.content,
-      userId: fields.userId,
+      userId: req.user.id,
       location: fields.location,
       lon: fields.lon,
       lat: fields.lat,
