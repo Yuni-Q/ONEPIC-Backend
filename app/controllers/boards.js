@@ -1,5 +1,7 @@
 const express = require('express');
 const sequelize = require('sequelize');
+const dayjs = require('dayjs');
+
 const router = express.Router();
 const AWS = require('aws-sdk');
 const formidable = require('formidable');
@@ -11,8 +13,6 @@ const db = require('../models');
 const {
   resultFormat,
 } = require('../helpers/formHelper');
-
-const router = express.Router();
 
 router.get('/users/likes', isLoggedIn, async (req, res) => {
   // const read = await db.boards.findAll({});
@@ -41,7 +41,6 @@ router.get('/users/likes', isLoggedIn, async (req, res) => {
   res.json(resultFormat(true, null, result));
 });
 
-
 router.get('/users', isLoggedIn, async (req, res) => {
   // const read = await db.boards.findAll({});
   const query = `
@@ -58,16 +57,13 @@ router.get('/users', isLoggedIn, async (req, res) => {
   res.json(resultFormat(true, null, result));
 });
 
-router.get('/users/:id', isLoggedIn, async (req, res) => {
-  // const read = await db.boards.findAll({});
-  const { id } = req.params;
+router.get('/users/ninePick', isLoggedIn, async (req, res) => {
+  console.log('aaaaaa');
   const query = `
     select
       * 
-    from boards
-      left join (SELECT boardId, count(*) as likeCounts FROM Node2.likes group by boardId) as counts
-        on boards.id = counts.boardId
-      where userId = ${id};
+    from boards 
+      where userId = ${req.user.id} and ninePick > 0;
     `;
   const result = await db.sequelize.query(query, {
     type: sequelize.QueryTypes.SELECT,
@@ -75,18 +71,66 @@ router.get('/users/:id', isLoggedIn, async (req, res) => {
   res.json(resultFormat(true, null, result));
 });
 
+router.put('/users/ninePick', isLoggedIn, async (req, res) => {
+  const { id: userId } = req.user;
+  const { boardId, number } = req.body;
+  const before = await db.boards.findOne({
+    where: {
+      userId,
+      ninePick: number,
+    },
+  });
+  if (before) {
+    db.boards.update({
+      ninePick: 0,
+    }, {
+      where: {
+        userId,
+        ninePick: number,
+      },
+    });
+  }
+  await db.boards.update({
+    ninePick: number,
+  }, {
+    where: {
+      id: boardId,
+    },
+  });
+  res.json(resultFormat(true, null));
+});
+
 router.get('/', isLoggedIn, async (req, res) => {
-  // const read = await db.boards.findAll({});
+  const {
+    offset,
+    limit,
+    year,
+    month,
+    location,
+    others,
+  } = req.query;
+  const date = dayjs(req.query.date).format('YYYY-MM-DD HH:mm:ss');
+  console.log(date);
   const query = `
-    select
-      * 
-    from boards
-      left join (SELECT boardId, count(*) as likeCounts FROM Node2.likes group by boardId) as counts
-        on boards.id = counts.boardId;
-    `;
-  const result = await db.sequelize.query(query, {
+  select
+    * 
+  from boards
+    left join (SELECT boardId, count(*) as likeCounts FROM Node2.likes group by boardId) as counts
+      on boards.id = counts.boardId
+    where createdAt <= '${date}'
+  `;
+  const query1 = others ? `${query} and userId != ${req.user.id}` : `${query} and userId = ${req.user.id}`;
+  const query2 = year ? `${query1} and year(Date) = ${year} and month(Date) = ${month}` : query1;
+  const query3 = location ? `${query2} and location = '${location}';` : query2;
+  const totalBoards = await db.sequelize.query(query3, {
     type: sequelize.QueryTypes.SELECT,
   });
+  const boards = totalBoards.slice(offset, limit);
+  const totalCount = boards.length;
+  const result = {
+    totalCount,
+    boards,
+  };
   res.json(resultFormat(true, null, result));
 });
 
@@ -114,7 +158,7 @@ router.get('/:id', isLoggedIn, async (req, res) => {
   res.json(resultFormat(true, null, result[0]));
 });
 
-router.post('/', async (req, res) => {
+router.post('/', isLoggedIn, async (req, res) => {
   AWS.config.update({
     accessKeyId: global.config.AWSAccessKeyId,
     secretAccessKey: global.config.AWSSecretKey,
@@ -137,10 +181,9 @@ router.post('/', async (req, res) => {
   form.parse(req, async (err, fields, files) => {
     if (!files.image) {
       const read = await db.boards.create({
-        title: fields.title,
         date: fields.date,
         content: fields.content,
-        userId: fields.userId,
+        userId: req.user.id,
         location: fields.location,
         lon: fields.lon,
         lat: fields.lat,
@@ -168,10 +211,9 @@ router.post('/', async (req, res) => {
     const baseUrl = 'https://yunhee.s3.amazonaws.com/';
     const imgUrl = baseUrl + imageUrl;
     const read = await db.boards.create({
-      title: fields.title,
       date: fields.date,
       content: fields.content,
-      userId: fields.userId,
+      userId: req.user.id,
       location: fields.location,
       lon: fields.lon,
       lat: fields.lat,
@@ -207,7 +249,6 @@ router.put('/:id', isLoggedIn, async (req, res) => {
   form.parse(req, isLoggedIn, async (err, fields, files) => {
     if (!files.image) {
       const read = await db.boards.update({
-        title: fields.title,
         date: fields.date,
         content: fields.content,
         userId: fields.userId,
@@ -242,7 +283,6 @@ router.put('/:id', isLoggedIn, async (req, res) => {
     const baseUrl = 'https://yunhee.s3.amazonaws.com/';
     const imgUrl = baseUrl + imageUrl;
     const read = await db.boards.update({
-      title: fields.title,
       date: fields.date,
       content: fields.content,
       userId: fields.userId,
@@ -274,8 +314,24 @@ router.delete('/:id', isLoggedIn, async (req, res) => {
       id,
     },
   });
-  
   res.json(resultFormat(true, null, read));
+});
+
+router.get('/users/:id', isLoggedIn, async (req, res) => {
+  // const read = await db.boards.findAll({});
+  const { id } = req.params;
+  const query = `
+    select
+      * 
+    from boards
+      left join (SELECT boardId, count(*) as likeCounts FROM Node2.likes group by boardId) as counts
+        on boards.id = counts.boardId
+      where userId = ${id};
+    `;
+  const result = await db.sequelize.query(query, {
+    type: sequelize.QueryTypes.SELECT,
+  });
+  res.json(resultFormat(true, null, result));
 });
 
 module.exports = router;

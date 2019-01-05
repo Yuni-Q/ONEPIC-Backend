@@ -17,6 +17,7 @@ module.exports = (Sequelize, DataTypes) => {
       lat: DataTypes.FLOAT,
       share: DataTypes.STRING,
       imgUrl: DataTypes.STRING,
+      ninePick: DataTypes.INTEGER,
     },
     {},
   );
