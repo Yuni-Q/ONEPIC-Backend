@@ -14,6 +14,22 @@ const {
   resultFormat,
 } = require('../helpers/formHelper');
 
+router.get('/users/location', isLoggedIn, async (req, res) => {
+  const { id: userId } = req.user;
+  const read = await db.boards.findAll({
+    where: {
+      userId,
+      location: {
+        [sequelize.Op.ne]: null,
+      },
+    },
+    group: 'location',
+  });
+  // console.log(read);
+  const result = read.length;
+  res.json(resultFormat(true, null, result));
+});
+
 router.get('/users/likes', isLoggedIn, async (req, res) => {
   // const read = await db.boards.findAll({});
   const query = `
