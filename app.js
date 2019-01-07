@@ -7,7 +7,8 @@ const createError = require('http-errors');
 const swaggerUi = require('swagger-ui-express');
 // const usersRouter = require('./routes/users');
 const route = require('./config/routes');
-const swaggerDocument = require('./swagger.json');
+// const swaggerDocument = require('./swagger.json');
+const swaggerDocument = require('./swagger/swagger.js');
 const environment = require('./config/environment');
 // const daliyLogger = require('./lib/logger');
 

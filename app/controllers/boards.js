@@ -40,7 +40,7 @@ router.get('/users/likes', isLoggedIn, async (req, res) => {
         select
           * 
         from boards
-          left join (
+          join (
             SELECT
               boardId,
               count(*) as likeCounts
@@ -97,22 +97,28 @@ router.put('/users/ninePick', isLoggedIn, async (req, res) => {
     },
   });
   if (before) {
-    db.boards.update({
-      ninePick: 0,
-    }, {
-      where: {
-        userId,
-        ninePick: number,
+    db.boards.update(
+      {
+        ninePick: 0,
       },
-    });
+      {
+        where: {
+          userId,
+          ninePick: number,
+        },
+      },
+    );
   }
-  await db.boards.update({
-    ninePick: number,
-  }, {
-    where: {
-      id: boardId,
+  await db.boards.update(
+    {
+      ninePick: number,
     },
-  });
+    {
+      where: {
+        id: boardId,
+      },
+    },
+  );
   res.json(resultFormat(true, null));
 });
 
@@ -150,31 +156,20 @@ router.get('/', isLoggedIn, async (req, res) => {
   res.json(resultFormat(true, null, result));
 });
 
-router.get('/:id', isLoggedIn, async (req, res) => {
-  const {
-    id,
-  } = req.params;
-  // const read = await db.boards.findOne({
-  //     where:{
-  //       id,
-  //     }
-  //   });
-  const query = `
-    select
-      * 
-    from boards
-      left join (SELECT boardId, count(*) as likeCounts FROM Node2.likes group by boardId) as counts
-        on boards.id = counts.boardId
-    where boards.id = ${id};
-    `;
-  const result = await db.sequelize.query(query, {
-    type: sequelize.QueryTypes.SELECT,
-  });
-  console.log('result', result);
-  res.json(resultFormat(true, null, result[0]));
-});
-
 router.post('/', isLoggedIn, async (req, res) => {
+  if (!req.body.image) {
+    const read = await db.boards.create({
+      date: req.body.date,
+      content: req.body.content,
+      userId: req.user.id,
+      location: req.body.location,
+      lon: req.body.lon,
+      lat: req.body.lat,
+      share: req.body.share,
+    });
+    res.json(resultFormat(true, null, read));
+    return;
+  }
   AWS.config.update({
     accessKeyId: global.config.AWSAccessKeyId,
     secretAccessKey: global.config.AWSSecretKey,
@@ -192,23 +187,8 @@ router.post('/', isLoggedIn, async (req, res) => {
   let fileName = '';
   possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   for (let i = 0; i < 8; i += 1) fileName += possible.charAt(Math.floor(Math.random() * possible.length));
-
   // 서버에 업로드 완료 후
   form.parse(req, async (err, fields, files) => {
-    if (!files.image) {
-      const read = await db.boards.create({
-        date: fields.date,
-        content: fields.content,
-        userId: req.user.id,
-        location: fields.location,
-        lon: fields.lon,
-        lat: fields.lat,
-        share: fields.share,
-      });
-      res.json(resultFormat(true, null, read));
-      return;
-    }
-
     const { image } = files;
     const defaultPath = fileName;
     const imageUrl = defaultPath + path.parse(image.name).ext;
@@ -243,6 +223,26 @@ router.post('/', isLoggedIn, async (req, res) => {
 });
 
 router.put('/:id', isLoggedIn, async (req, res) => {
+  if (!req.body.image) {
+    const read = await db.boards.update(
+      {
+        date: req.body.date,
+        content: req.body.content,
+        userId: req.user.id,
+        location: req.body.location,
+        lon: req.body.lon,
+        lat: req.body.lat,
+        share: req.body.share,
+      },
+      {
+        where: {
+          id: req.params.id,
+        },
+      },
+    );
+    res.json(resultFormat(true, null, read));
+    return;
+  }
   AWS.config.update({
     accessKeyId: global.config.AWSAccessKeyId,
     secretAccessKey: global.config.AWSSecretKey,
@@ -263,24 +263,6 @@ router.put('/:id', isLoggedIn, async (req, res) => {
 
   // 서버에 업로드 완료 후
   form.parse(req, isLoggedIn, async (err, fields, files) => {
-    if (!files.image) {
-      const read = await db.boards.update({
-        date: fields.date,
-        content: fields.content,
-        userId: fields.userId,
-        location: fields.location,
-        lon: fields.lon,
-        lat: fields.lat,
-        share: fields.share,
-      }, {
-        where: {
-          id: req.params.id,
-        },
-      });
-      res.json(resultFormat(true, null, read));
-      return;
-    }
-
     const { image } = files;
     const defaultPath = fileName;
     const imageUrl = defaultPath + path.parse(image.name).ext;
@@ -298,39 +280,27 @@ router.put('/:id', isLoggedIn, async (req, res) => {
     });
     const baseUrl = 'https://yunhee.s3.amazonaws.com/';
     const imgUrl = baseUrl + imageUrl;
-    const read = await db.boards.update({
-      date: fields.date,
-      content: fields.content,
-      userId: fields.userId,
-      location: fields.location,
-      lon: fields.lon,
-      lat: fields.lat,
-      share: fields.share,
-      imgUrl,
-    }, {
-      where: {
-        id: req.params.id,
+    const read = await db.boards.update(
+      {
+        date: fields.date,
+        content: fields.content,
+        userId: fields.userId,
+        location: fields.location,
+        lon: fields.lon,
+        lat: fields.lat,
+        share: fields.share,
+        imgUrl,
       },
-    });
+      {
+        where: {
+          id: req.params.id,
+        },
+      },
+    );
     res.json(resultFormat(true, null, read));
     // unlink tmp files
     fs.unlinkSync(image.path);
   });
-});
-
-// 게시글 id에 해당하는 글 지우기 -> deleteBoards에 넣기
-router.delete('/:id', isLoggedIn, async (req, res) => {
-  const {
-    id,
-  } = req.params;
-  // await db.deleteBoards.create({
-  // });
-  const read = await db.boards.destroy({
-    where: {
-      id,
-    },
-  });
-  res.json(resultFormat(true, null, read));
 });
 
 router.get('/users/:id', isLoggedIn, async (req, res) => {
@@ -348,6 +318,45 @@ router.get('/users/:id', isLoggedIn, async (req, res) => {
     type: sequelize.QueryTypes.SELECT,
   });
   res.json(resultFormat(true, null, result));
+});
+
+router.get('/:id', isLoggedIn, async (req, res) => {
+  const {
+    id,
+  } = req.params;
+  // const read = await db.boards.findOne({
+  //     where:{
+  //       id,
+  //     }
+  //   });
+  const query = `
+    select
+      * 
+    from boards
+      left join (SELECT boardId, count(*) as likeCounts FROM Node2.likes group by boardId) as counts
+        on boards.id = counts.boardId
+    where boards.id = ${id};
+    `;
+  const result = await db.sequelize.query(query, {
+    type: sequelize.QueryTypes.SELECT,
+  });
+  console.log('result', result);
+  res.json(resultFormat(true, null, result[0]));
+});
+
+// 게시글 id에 해당하는 글 지우기 -> deleteBoards에 넣기
+router.delete('/:id', isLoggedIn, async (req, res) => {
+  const {
+    id,
+  } = req.params;
+  // await db.deleteBoards.create({
+  // });
+  const read = await db.boards.destroy({
+    where: {
+      id,
+    },
+  });
+  res.json(resultFormat(true, null, read));
 });
 
 module.exports = router;

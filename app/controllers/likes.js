@@ -14,11 +14,24 @@ router.get('/', isLoggedIn, async (req, res) => {
 router.post('/', isLoggedIn, async (req, res) => {
   const { id: userId } = req.user;
   const { boardId } = req.body;
-  const read = await db.likes.create({
-    userId,
-    boardId,
+  const like = await db.likes.findOne({
+    where: {
+      userId,
+      boardId,
+    },
   });
-  res.json(resultFormat(true, null, read));
+  const result = like
+    ? await db.likes.destroy({
+      where: {
+        userId,
+        boardId,
+      },
+    })
+    : await db.likes.create({
+      userId,
+      boardId,
+    });
+  res.json(resultFormat(true, null, result));
 });
 
 router.delete('/:id', isLoggedIn, async (req, res) => {
