@@ -226,7 +226,6 @@ router.get('/', isLoggedIn, async (req, res) => {
       boards.lat as lat,
       boards.share as share,
       boards.imgUrl as imgUrl,
-      boards.imgUrl as imgUrl,
       boards.ninePick as ninePick,
       counts.likeCounts as likeCounts,
       users.nickName as nickName,
@@ -236,7 +235,7 @@ router.get('/', isLoggedIn, async (req, res) => {
         on boards.id = counts.boardId
       left join users
         on boards.userId = users.id
-      where createdAt <= '${req.query.date}'
+      where boards.createdAt <= '${req.query.date}'
   `;
   const query1 = others ? `${query} and userId != ${req.user.id}` : `${query} and userId = ${req.user.id}`;
   const query2 = year ? `${query1} and year(Date) = ${year} and month(Date) = ${month}` : query1;
