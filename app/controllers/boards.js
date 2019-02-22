@@ -265,9 +265,9 @@ router.post('/', isLoggedIn, async (req, res) => {
       content: fields.content,
       userId: req.user.id,
       location: fields.location,
-      lon: fields.lon,
-      lat: fields.lat,
-      share: fields.share,
+      lon: parseInt(fields.lon, 10),
+      lat: parseInt(fields.lat, 10),
+      share: parseInt(fields.share, 10),
       imgUrl,
     });
     res.json(resultFormat(true, null, read));
