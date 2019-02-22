@@ -1,5 +1,6 @@
 const express = require('express');
 const sequelize = require('sequelize');
+const dayjs = require('dayjs');
 
 const router = express.Router();
 const AWS = require('aws-sdk');
@@ -225,12 +226,14 @@ router.get('/', isLoggedIn, async (req, res) => {
   const totalBoards = await db.sequelize.query(query3, {
     type: sequelize.QueryTypes.SELECT,
   });
-  const boards = totalBoards.slice(offset, limit);
-  const totalCount = boards.length;
+  const preBoards = totalBoards.slice(offset, limit);
+  const totalCount = totalBoards.length;
+  const boards = await preBoards.map((board) => ({ ...board, data: dayjs(board.data).format('YYYY.MM.DD')}))
   const result = {
     totalCount,
     boards,
   };
+  
   console.log(111, result);
   res.json(resultFormat(true, null, result));
 });
