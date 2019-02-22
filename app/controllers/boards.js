@@ -31,7 +31,7 @@ router.get('/image', async (req, res) => {
     index = Math.floor(Math.random() * 100);
   } else {
     index = Math.floor(Math.random() * totalCount);
-    console.log(index)
+    console.log(index);
   }
 
   res.json(resultFormat(true, null, result[index].imgUrl));
