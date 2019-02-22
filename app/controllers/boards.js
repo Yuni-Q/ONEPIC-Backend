@@ -1,6 +1,5 @@
 const express = require('express');
 const sequelize = require('sequelize');
-const dayjs = require('dayjs');
 
 const router = express.Router();
 const AWS = require('aws-sdk');
@@ -13,6 +12,30 @@ const db = require('../models');
 const {
   resultFormat,
 } = require('../helpers/formHelper');
+
+router.get('/image', async (req, res) => {
+  const query = `
+  select
+  * 
+  from boards
+    left join (SELECT boardId, count(*) as likeCounts FROM Node2.likes group by boardId) as counts
+      on boards.id = counts.boardId
+  order by counts.likeCounts DESC;
+    `;
+  const result = await db.sequelize.query(query, {
+    type: sequelize.QueryTypes.SELECT,
+  });
+  const totalCount = result.length;
+  let index = 0;
+  if (totalCount >= 100) {
+    index = Math.floor(Math.random() * 100);
+  } else {
+    index = Math.floor(Math.random() * totalCount);
+    console.log(index)
+  }
+
+  res.json(resultFormat(true, null, totalCount[index].imgUrl));
+});
 
 router.get('/location', async (req, res) => {
   const result = [
