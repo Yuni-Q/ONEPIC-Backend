@@ -208,6 +208,8 @@ router.get('/', isLoggedIn, async (req, res) => {
 });
 
 router.post('/', isLoggedIn, async (req, res) => {
+  console.log(req);
+  console.log(res);
   if (!req.body.image) {
     const read = await db.boards.create({
       date: req.body.date,
