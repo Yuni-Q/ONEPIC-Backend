@@ -329,46 +329,46 @@
           "type": "file"
         },
         {
-          "name": "body",
-          "in": "body",
-          "required": true,
-          "schema": {
-            "type": "object",
-            "properties": {
-              "title": {
-                "type": "string",
-                "example": "파리여행"
-              },
-              "date": {
-                "type": "string",
-                "example": "2018-01-07"
-              },
-              "content": {
-                "type": "string",
-                "example": "감성파뤼이"
-              },
-              "userId": {
-                "type": "integet",
-                "example": 1
-              },
-              "location": {
-                "type": "string",
-                "example": "paris"
-              },
-              "lon": {
-                "type": "float",
-                "example": 11.111
-              },
-              "lat": {
-                "type": "float",
-                "example": 22.222
-              },
-              "share": {
-                "type": "boolean",
-                "example": 0
-              }
-            }
-          }
+          "name": "date",
+          "in": "formData",
+          "description": "file to upload",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "name": "content",
+          "in": "formData",
+          "description": "file to upload",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "name": "location",
+          "in": "formData",
+          "description": "file to upload",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "name": "lon",
+          "in": "formData",
+          "description": "file to upload",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "name": "lat",
+          "in": "formData",
+          "description": "file to upload",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "name": "share",
+          "in": "formData",
+          "description": "file to upload",
+          "required": false,
+          "type": "text"
         }
       ],
       "responses": {
