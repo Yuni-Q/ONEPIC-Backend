@@ -7,7 +7,9 @@ const AWS = require('aws-sdk');
 const formidable = require('formidable');
 const fs = require('fs');
 const path = require('path');
-const { isLoggedIn } = require('../helpers/checkLogin');
+const {
+  isLoggedIn
+} = require('../helpers/checkLogin');
 
 const db = require('../models');
 const {
@@ -92,7 +94,9 @@ router.get('/location', async (req, res) => {
 });
 
 router.get('/users/location', isLoggedIn, async (req, res) => {
-  const { id: userId } = req.user;
+  const {
+    id: userId
+  } = req.user;
   const read = await db.boards.findAll({
     where: {
       userId,
@@ -164,8 +168,13 @@ router.get('/users/ninePick', isLoggedIn, async (req, res) => {
 });
 
 router.put('/users/ninePick', isLoggedIn, async (req, res) => {
-  const { id: userId } = req.user;
-  const { boardId, number } = req.body;
+  const {
+    id: userId
+  } = req.user;
+  const {
+    boardId,
+    number
+  } = req.body;
   const before = await db.boards.findOne({
     where: {
       userId,
@@ -173,28 +182,22 @@ router.put('/users/ninePick', isLoggedIn, async (req, res) => {
     },
   });
   if (before) {
-    db.boards.update(
-      {
-        ninePick: 0,
-      },
-      {
-        where: {
-          userId,
-          ninePick: number,
-        },
-      },
-    );
-  }
-  await db.boards.update(
-    {
-      ninePick: number,
-    },
-    {
+    db.boards.update({
+      ninePick: 0,
+    }, {
       where: {
-        id: boardId,
+        userId,
+        ninePick: number,
       },
+    }, );
+  }
+  await db.boards.update({
+    ninePick: number,
+  }, {
+    where: {
+      id: boardId,
     },
-  );
+  }, );
   res.json(resultFormat(true, null));
 });
 
@@ -228,12 +231,16 @@ router.get('/', isLoggedIn, async (req, res) => {
   });
   const preBoards = totalBoards.slice(offset, limit);
   const totalCount = totalBoards.length;
-  const boards = await preBoards.map((board) => ({ ...board, data: dayjs(board.data).format('YYYY.MM.DD')}))
+  const boards = await preBoards.map((board) => {
+    return {
+      ...board,
+      date: dayjs(board.date).format('YYYY.MM.DD'),
+    };
+  });
   const result = {
     totalCount,
     boards,
   };
-  
   console.log(111, result);
   res.json(resultFormat(true, null, result));
 });
@@ -273,7 +280,9 @@ router.post('/', isLoggedIn, async (req, res) => {
   form.parse(req, async (err, fields, files) => {
     console.log(111, fields);
     console.log(111, files);
-    const { image } = files;
+    const {
+      image,
+    } = files;
     const defaultPath = fileName;
     console.log(111, image);
     const imageUrl = defaultPath + path.parse(image.name).ext;
@@ -309,22 +318,19 @@ router.post('/', isLoggedIn, async (req, res) => {
 
 router.put('/:id', isLoggedIn, async (req, res) => {
   if (!req.body.image) {
-    const read = await db.boards.update(
-      {
-        date: req.body.date,
-        content: req.body.content,
-        userId: req.user.id,
-        location: req.body.location,
-        lon: req.body.lon,
-        lat: req.body.lat,
-        share: req.body.share,
+    const read = await db.boards.update({
+      date: req.body.date,
+      content: req.body.content,
+      userId: req.user.id,
+      location: req.body.location,
+      lon: req.body.lon,
+      lat: req.body.lat,
+      share: req.body.share,
+    }, {
+      where: {
+        id: req.params.id,
       },
-      {
-        where: {
-          id: req.params.id,
-        },
-      },
-    );
+    }, );
     res.json(resultFormat(true, null, read));
     return;
   }
@@ -348,7 +354,9 @@ router.put('/:id', isLoggedIn, async (req, res) => {
 
   // 서버에 업로드 완료 후
   form.parse(req, isLoggedIn, async (err, fields, files) => {
-    const { image } = files;
+    const {
+      image
+    } = files;
     const defaultPath = fileName;
     const imageUrl = defaultPath + path.parse(image.name).ext;
 
@@ -365,23 +373,20 @@ router.put('/:id', isLoggedIn, async (req, res) => {
     });
     const baseUrl = 'https://yunhee.s3.amazonaws.com/';
     const imgUrl = baseUrl + imageUrl;
-    const read = await db.boards.update(
-      {
-        date: fields.date,
-        content: fields.content,
-        userId: fields.userId,
-        location: fields.location,
-        lon: fields.lon,
-        lat: fields.lat,
-        share: fields.share,
-        imgUrl,
+    const read = await db.boards.update({
+      date: fields.date,
+      content: fields.content,
+      userId: fields.userId,
+      location: fields.location,
+      lon: fields.lon,
+      lat: fields.lat,
+      share: fields.share,
+      imgUrl,
+    }, {
+      where: {
+        id: req.params.id,
       },
-      {
-        where: {
-          id: req.params.id,
-        },
-      },
-    );
+    }, );
     res.json(resultFormat(true, null, read));
     // unlink tmp files
     fs.unlinkSync(image.path);
@@ -390,7 +395,9 @@ router.put('/:id', isLoggedIn, async (req, res) => {
 
 router.get('/users/:id', isLoggedIn, async (req, res) => {
   // const read = await db.boards.findAll({});
-  const { id } = req.params;
+  const {
+    id
+  } = req.params;
   const query = `
     select
       * 
