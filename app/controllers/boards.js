@@ -130,6 +130,7 @@ router.get('/users/likes', isLoggedIn, async (req, res) => {
   const result = await db.sequelize.query(query, {
     type: sequelize.QueryTypes.SELECT,
   });
+  console.log(result);
   res.json(resultFormat(true, null, result));
 });
 
