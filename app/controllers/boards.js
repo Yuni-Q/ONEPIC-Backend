@@ -208,21 +208,21 @@ router.get('/', isLoggedIn, async (req, res) => {
 });
 
 router.post('/', isLoggedIn, async (req, res) => {
-  console.log(req);
+  console.log(req.body);
   console.log(res);
-  if (!req.body.image) {
-    const read = await db.boards.create({
-      date: req.body.date,
-      content: req.body.content,
-      userId: req.user.id,
-      location: req.body.location,
-      lon: req.body.lon,
-      lat: req.body.lat,
-      share: req.body.share,
-    });
-    res.json(resultFormat(true, null, read));
-    return;
-  }
+  // if (!req.body.image) {
+  //   const read = await db.boards.create({
+  //     date: req.body.date,
+  //     content: req.body.content,
+  //     userId: req.user.id,
+  //     location: req.body.location,
+  //     lon: req.body.lon,
+  //     lat: req.body.lat,
+  //     share: req.body.share,
+  //   });
+  //   res.json(resultFormat(true, null, read));
+  //   return;
+  // }
   AWS.config.update({
     accessKeyId: global.config.AWSAccessKeyId,
     secretAccessKey: global.config.AWSSecretKey,
