@@ -8,7 +8,7 @@ const formidable = require('formidable');
 const fs = require('fs');
 const path = require('path');
 const {
-  isLoggedIn
+  isLoggedIn,
 } = require('../helpers/checkLogin');
 
 const db = require('../models');
@@ -95,7 +95,7 @@ router.get('/location', async (req, res) => {
 
 router.get('/users/location', isLoggedIn, async (req, res) => {
   const {
-    id: userId
+    id: userId,
   } = req.user;
   const read = await db.boards.findAll({
     where: {
@@ -169,11 +169,11 @@ router.get('/users/ninePick', isLoggedIn, async (req, res) => {
 
 router.put('/users/ninePick', isLoggedIn, async (req, res) => {
   const {
-    id: userId
+    id: userId,
   } = req.user;
   const {
     boardId,
-    number
+    number,
   } = req.body;
   const before = await db.boards.findOne({
     where: {
@@ -189,7 +189,7 @@ router.put('/users/ninePick', isLoggedIn, async (req, res) => {
         userId,
         ninePick: number,
       },
-    }, );
+    });
   }
   await db.boards.update({
     ninePick: number,
@@ -197,7 +197,7 @@ router.put('/users/ninePick', isLoggedIn, async (req, res) => {
     where: {
       id: boardId,
     },
-  }, );
+  });
   res.json(resultFormat(true, null));
 });
 
@@ -217,10 +217,25 @@ router.get('/', isLoggedIn, async (req, res) => {
   }
   const query = `
     select
-      * 
+      boards.id as id,
+      boards.date as date,
+      boards.content as content,
+      boards.userId as userId,
+      boards.location as location,
+      boards.lon as lon,
+      boards.lat as lat,
+      boards.share as share,
+      boards.imgUrl as imgUrl,
+      boards.imgUrl as imgUrl,
+      boards.ninePick as ninePick,
+      counts.likeCounts as likeCounts,
+      users.nickName as nickName,
+      users.profileImg as profileImg
     from boards
       left join (SELECT boardId, count(*) as likeCounts FROM Node2.likes group by boardId) as counts
         on boards.id = counts.boardId
+      left join users
+        on boards.userId = users.id
       where createdAt <= '${req.query.date}'
   `;
   const query1 = others ? `${query} and userId != ${req.user.id}` : `${query} and userId = ${req.user.id}`;
@@ -330,7 +345,7 @@ router.put('/:id', isLoggedIn, async (req, res) => {
       where: {
         id: req.params.id,
       },
-    }, );
+    });
     res.json(resultFormat(true, null, read));
     return;
   }
@@ -355,7 +370,7 @@ router.put('/:id', isLoggedIn, async (req, res) => {
   // 서버에 업로드 완료 후
   form.parse(req, isLoggedIn, async (err, fields, files) => {
     const {
-      image
+      image,
     } = files;
     const defaultPath = fileName;
     const imageUrl = defaultPath + path.parse(image.name).ext;
@@ -386,7 +401,7 @@ router.put('/:id', isLoggedIn, async (req, res) => {
       where: {
         id: req.params.id,
       },
-    }, );
+    });
     res.json(resultFormat(true, null, read));
     // unlink tmp files
     fs.unlinkSync(image.path);
@@ -396,7 +411,7 @@ router.put('/:id', isLoggedIn, async (req, res) => {
 router.get('/users/:id', isLoggedIn, async (req, res) => {
   // const read = await db.boards.findAll({});
   const {
-    id
+    id,
   } = req.params;
   const query = `
     select
