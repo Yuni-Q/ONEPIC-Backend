@@ -14,6 +14,58 @@ const {
   resultFormat,
 } = require('../helpers/formHelper');
 
+router.get('/location', async (req, res) => {
+  const result = [
+    'Seoul Capital City',
+    'Incheon City',
+    'Busan City',
+    'Daegu City',
+    'Gwangju City',
+    'Daejeon City',
+    'Ulsan City',
+    'Gyeonggi-do',
+    'Gangwon-do',
+    'Chungcheongnam-do',
+    'Chungcheongbuk-do',
+    'Jeollanam-do',
+    'Jeollabuk-do',
+    'Gyeongsangnam-do',
+    'Gyeongsangbuk-do',
+    'Jeju-do',
+    'Argentina',
+    'Australia',
+    'Belgium',
+    'Brazil',
+    'Britain',
+    'Canada',
+    'Chile',
+    'China',
+    'Croatia',
+    'Cuba',
+    'Czech',
+    'Denmark',
+    'Egypt',
+    'England',
+    'France',
+    'Greece',
+    'India',
+    'Iran',
+    'Israel',
+    'Japan',
+    'Kenya',
+    'Laos',
+    'Lebanon',
+    'Netherlands',
+    'Poland',
+    'Portugal',
+    'Russia',
+    'Spain',
+    'Switzerland',
+    'Taiwan',
+  ];
+  res.json(resultFormat(true, null, result));
+});
+
 router.get('/users/location', isLoggedIn, async (req, res) => {
   const { id: userId } = req.user;
   const read = await db.boards.findAll({
@@ -74,7 +126,6 @@ router.get('/users', isLoggedIn, async (req, res) => {
 });
 
 router.get('/users/ninePick', isLoggedIn, async (req, res) => {
-  console.log('aaaaaa');
   const query = `
     select
       * 

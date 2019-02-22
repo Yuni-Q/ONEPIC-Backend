@@ -322,6 +322,13 @@
           "required": true
         },
         {
+          "name": "image",
+          "in": "formData",
+          "description": "file to upload",
+          "required": false,
+          "type": "file"
+        },
+        {
           "name": "body",
           "in": "body",
           "required": true,
@@ -341,8 +348,8 @@
                 "example": "감성파뤼이"
               },
               "userId": {
-                "type": "int",
-                "example": "1"
+                "type": "integet",
+                "example": 1
               },
               "location": {
                 "type": "string",
@@ -359,10 +366,6 @@
               "share": {
                 "type": "boolean",
                 "example": 0
-              },
-              "image": {
-                "type": "string",
-                "example": null
               }
             }
           }
