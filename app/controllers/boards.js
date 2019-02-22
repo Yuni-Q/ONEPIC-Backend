@@ -182,15 +182,17 @@ router.get('/', isLoggedIn, async (req, res) => {
     location,
     others,
   } = req.query;
-  const date = dayjs(req.query.date).format('YYYY-MM-DD HH:mm:ss');
-  console.log(date);
+  if (!req.query.body) {
+    res.json(resultFormat(false, true, 'date 값이 없습니다.'));
+    return;
+  }
   const query = `
-  select
-    * 
-  from boards
-    left join (SELECT boardId, count(*) as likeCounts FROM Node2.likes group by boardId) as counts
-      on boards.id = counts.boardId
-    where createdAt <= '${date}'
+    select
+      * 
+    from boards
+      left join (SELECT boardId, count(*) as likeCounts FROM Node2.likes group by boardId) as counts
+        on boards.id = counts.boardId
+      where createdAt <= '${req.query.date}'
   `;
   const query1 = others ? `${query} and userId != ${req.user.id}` : `${query} and userId = ${req.user.id}`;
   const query2 = year ? `${query1} and year(Date) = ${year} and month(Date) = ${month}` : query1;
