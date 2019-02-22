@@ -5,9 +5,6 @@
         "boards"
       ],
       "summary": "방문한 도시 수",
-      "consumes": [
-        "multipart/form-data"
-      ],
       "produces": [
         "application/json"
       ],
@@ -312,6 +309,9 @@
         "boards"
       ],
       "summary": "게시글",
+      "consumes": [
+        "multipart/form-data"
+      ],
       "produces": [
         "application/json"
       ],
