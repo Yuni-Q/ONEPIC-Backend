@@ -34,7 +34,7 @@ router.get('/image', async (req, res) => {
     console.log(index)
   }
 
-  res.json(resultFormat(true, null, totalCount[index].imgUrl));
+  res.json(resultFormat(true, null, result[index].imgUrl));
 });
 
 router.get('/location', async (req, res) => {
