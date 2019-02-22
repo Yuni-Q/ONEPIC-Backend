@@ -244,6 +244,7 @@ router.post('/', isLoggedIn, async (req, res) => {
   form.parse(req, async (err, fields, files) => {
     const { image } = files;
     const defaultPath = fileName;
+    console.log(image.name);
     const imageUrl = defaultPath + path.parse(image.name).ext;
 
     // image upload
