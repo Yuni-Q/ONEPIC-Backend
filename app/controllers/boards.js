@@ -130,7 +130,6 @@ router.get('/users/likes', isLoggedIn, async (req, res) => {
   const result = await db.sequelize.query(query, {
     type: sequelize.QueryTypes.SELECT,
   });
-  console.log(111, result);
   res.json(resultFormat(true, null, result));
 });
 
@@ -232,6 +231,7 @@ router.get('/', isLoggedIn, async (req, res) => {
     totalCount,
     boards,
   };
+  console.log(111, result);
   res.json(resultFormat(true, null, result));
 });
 
