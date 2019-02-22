@@ -182,8 +182,9 @@ router.get('/', isLoggedIn, async (req, res) => {
     location,
     others,
   } = req.query;
+  console.log(111, req.query.body);
   if (!req.query.body) {
-    res.json(resultFormat(false, true, 'date 값이 없습니다.'));
+    res.json(resultFormat(false, 412, 'no have date'));
     return;
   }
   const query = `
