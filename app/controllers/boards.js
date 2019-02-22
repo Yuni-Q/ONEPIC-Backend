@@ -208,8 +208,6 @@ router.get('/', isLoggedIn, async (req, res) => {
 });
 
 router.post('/', isLoggedIn, async (req, res) => {
-  console.log(req.body);
-  console.log(res);
   // if (!req.body.image) {
   //   const read = await db.boards.create({
   //     date: req.body.date,
@@ -242,6 +240,8 @@ router.post('/', isLoggedIn, async (req, res) => {
   for (let i = 0; i < 8; i += 1) fileName += possible.charAt(Math.floor(Math.random() * possible.length));
   // 서버에 업로드 완료 후
   form.parse(req, async (err, fields, files) => {
+    console.log(111, fields);
+    console.log(111, files);
     const { image } = files;
     const defaultPath = fileName;
     console.log(111, image);
