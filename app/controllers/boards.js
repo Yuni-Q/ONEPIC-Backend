@@ -47,6 +47,7 @@ router.get('/location', async (req, res) => {
     'Egypt',
     'England',
     'France',
+    'Germary',
     'Greece',
     'India',
     'Iran',
