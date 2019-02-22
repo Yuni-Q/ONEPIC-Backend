@@ -182,8 +182,8 @@ router.get('/', isLoggedIn, async (req, res) => {
     location,
     others,
   } = req.query;
-  console.log(111, req.query.body);
-  if (!req.query.body) {
+  console.log(111, req.query.date);
+  if (!req.query.date) {
     res.json(resultFormat(false, 412, 'no have date'));
     return;
   }
