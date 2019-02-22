@@ -347,28 +347,28 @@
           "in": "formData",
           "description": "file to upload",
           "required": false,
-          "type": "text"
+          "type": "integer"
         },
         {
           "name": "lon",
           "in": "formData",
           "description": "file to upload",
           "required": false,
-          "type": "text"
+          "type": "integer"
         },
         {
           "name": "lat",
           "in": "formData",
           "description": "file to upload",
           "required": false,
-          "type": "text"
+          "type": "integer"
         },
         {
           "name": "share",
           "in": "formData",
           "description": "file to upload",
           "required": false,
-          "type": "text"
+          "type": "integer"
         }
       ],
       "responses": {
