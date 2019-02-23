@@ -238,10 +238,7 @@ router.get('/', isLoggedIn, async (req, res) => {
       where boards.createdAt <= '${req.query.date}'
   `;
   console.log('others', others, 'year', year, 'location', location);
-  console.log(others === 1);
   const query1 = parseInt(others, 10) ? `${query} and userId != ${req.user.id}` : `${query} and userId = ${req.user.id}`;
-  console.log(222, others === 1);
-  console.log(others === 1);
   const query2 = parseInt(year, 10) ? `${query1} and year(Date) = ${year} and month(Date) = ${month}` : query1;
   const query3 = parseInt(location, 10) ? `${query2} and location = '${location}';` : query2;
   console.log('query1', query1, 'query2', query2, 'query3', query3);
