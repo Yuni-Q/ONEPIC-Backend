@@ -303,7 +303,7 @@
       }
     }
   },
-  "/boards?date=2019-02-23T12%3A30%3A18&others=1": {
+  "/boards?date=2019-02-23T12%3A30%3A18&others=0": {
     "post": {
       "tags": [
         "boards"
@@ -459,7 +459,7 @@
           "in": "header",
           "type": "string",
           "description": "API 인증 키",
-          "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywibmlja05hbWUiOm51bGwsImVtYWlsIjoiYWFAYWEuY29tIiwiaWF0IjoxNTQzMDY5NTczLCJleHAiOjE1NDM2NzQzNzMsImlzcyI6Ik9ORVBJQyIsInN1YiI6InVzZXJJbmZvIn0.yOCYZq4pEH0wVJciToRkl8W8kcRwufMXW2sUEI8dCks",
+          "default": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibmlja05hbWUiOm51bGwsImVtYWlsIjoiZGFleXVuQG9uZXBpY2suY29tIiwiaWF0IjoxNTUwODQ1NDQ0LCJleHAiOjE1NTE0NTAyNDQsImlzcyI6Ik9ORVBJQyIsInN1YiI6InVzZXJJbmZvIn0.ZVj1N7c5-hV3Cbg3_pYD6VDIbvyj8rWZQ5mQuqluC4Y",
           "required": true
         }
       ],
