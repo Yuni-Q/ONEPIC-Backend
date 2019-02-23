@@ -241,6 +241,7 @@ router.get('/', isLoggedIn, async (req, res) => {
   const query1 = others ? `${query} and userId != ${req.user.id}` : `${query} and userId = ${req.user.id}`;
   const query2 = year ? `${query1} and year(Date) = ${year} and month(Date) = ${month}` : query1;
   const query3 = location ? `${query2} and location = '${location}';` : query2;
+  console.log('query1', query1, 'query2', query2, 'query3', query3)
   const totalBoards = await db.sequelize.query(query3, {
     type: sequelize.QueryTypes.SELECT,
   });
