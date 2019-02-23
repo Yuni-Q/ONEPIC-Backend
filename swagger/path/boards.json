@@ -303,7 +303,7 @@
       }
     }
   },
-  "/boards?date=2019-02-23T12%3A30%3A18&others=0": {
+  "/boards?date=2019-02-23T12%3A30%3A18&others=1": {
     "post": {
       "tags": [
         "boards"
