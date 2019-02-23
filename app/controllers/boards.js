@@ -239,7 +239,7 @@ router.get('/', isLoggedIn, async (req, res) => {
   `;
   console.log('others', others, 'year', year, 'location', location);
   const query1 = await !!others === true ? `${query} and userId != ${req.user.id}` : `${query} and userId = ${req.user.id}`;
-  console.log(222, !!others === true ? 'aa' : 'bb');
+  console.log(222, !!others === true);
   const query2 = await year ? `${query1} and year(Date) = ${year} and month(Date) = ${month}` : query1;
   const query3 = await location ? `${query2} and location = '${location}';` : query2;
   console.log('query1', query1, 'query2', query2, 'query3', query3);
