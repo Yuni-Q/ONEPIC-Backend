@@ -16,6 +16,31 @@ const {
   resultFormat,
 } = require('../helpers/formHelper');
 
+router.get('/date', async (req, res) => {
+  const firstQuery = `
+  select
+  * 
+  from boards
+  order by createdAt ASC;
+    `;
+  const first = await db.sequelize.query(firstQuery, {
+    type: sequelize.QueryTypes.SELECT,
+  });
+  const lastQuery = `
+  select
+  * 
+  from boards
+  order by createdAt DESC;
+    `;
+  const last = await db.sequelize.query(lastQuery, {
+    type: sequelize.QueryTypes.SELECT,
+  });
+  const result = [];
+  result.push(dayjs(first[0].date).format('YYYY.MM'));
+  result.push(dayjs(last[0].date).format('YYYY.MM'));
+  res.json(resultFormat(true, null, result));
+});
+
 router.get('/image', async (req, res) => {
   const query = `
   select
