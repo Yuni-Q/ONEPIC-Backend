@@ -237,6 +237,7 @@ router.get('/', isLoggedIn, async (req, res) => {
         on boards.userId = users.id
       where boards.createdAt <= '${req.query.date}'
   `;
+  console.log('others', others, 'year', year, 'location', location);
   const query1 = others ? `${query} and userId != ${req.user.id}` : `${query} and userId = ${req.user.id}`;
   const query2 = year ? `${query1} and year(Date) = ${year} and month(Date) = ${month}` : query1;
   const query3 = location ? `${query2} and location = '${location}';` : query2;
